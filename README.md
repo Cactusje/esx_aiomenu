@@ -9,6 +9,7 @@ https://discord.gg/KpumbUk
 * [es_extended](https://github.com/ESX-Org/es_extended)
 * [esx_animations](https://github.com/ESX-Org/esx_animations)
 * [esx_locksystem](https://github.com/ArkSeyonet/esx_locksystem)
+* [esx_accessoires](https://github.com/ESX-Org/esx_accessories)
 
 ## Installation
 
