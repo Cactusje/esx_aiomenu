@@ -1,12 +1,10 @@
 local Vehicle 					= GetVehiclePedIsIn(ped, false)
 local inVehicle 				= IsPedSittingInAnyVehicle(ped)
 local lastCar 					= nil
-local myIdentity 				= {}
 local lockStatus 				= 0
 local lockStatusOutside 		= 0
 local hasKey 					= false
 time 							= 0
-myIdentifiers 					= {}
 ESX								= nil
 
 
@@ -51,11 +49,6 @@ Citizen.CreateThread(function()
 	end
 end)
 
-RegisterNetEvent('esx_aiomenu:saveID')
-AddEventHandler('esx_aiomenu:saveID', function(data)
-	myIdentifiers = data
-end)
-
 RegisterNUICallback('NUIFocusOff', function()
 	SetNuiFocus(false, false)
 	SendNUIMessage({type = 'closeAll'})
@@ -69,10 +62,6 @@ end)
 RegisterNUICallback('NUIShowInteractions', function()
   SetNuiFocus(true, true)
   SendNUIMessage({type = 'openInteractions'})
-end)
-
-RegisterNUICallback('togglephone', function(data)
-	TriggerServerEvent('esx_aiomenu:phone', myIdentifiers, data)
 end)
 
 RegisterNUICallback('toggleEngineOnOff', function()
@@ -111,8 +100,6 @@ RegisterNUICallback('NUIESXActions', function(data)
 	SetNuiFocus(true, true)
 	SendNUIMessage({type = 'openESX'})
 	SendNUIMessage({type = 'showInventoryButton'})
-	SendNUIMessage({type = 'showPhoneButton'})
-	SendNUIMessage({type = 'showBillingButton'})
 	SendNUIMessage({type = 'showAnimationsButton'})
 end)
 
@@ -120,83 +107,12 @@ RegisterNUICallback('NUIopenInventory', function()
 	exports['es_extended']:openInventory()
 end)
 
-RegisterNUICallback('NUIopenPhone', function()
-	exports['esx_phone']:openESXPhone()
-end)
-
 RegisterNUICallback('NUIopenBilling', function()
 	exports['esx_billing']:openBilling()
 end)
 
-RegisterNUICallback('NUIsetVoice', function()
-	exports['esx_voice']:setVoice()
-end)
-
 RegisterNUICallback('NUIopenAnimations', function()
 	exports['esx_animations']:openAnimations()
-end)
-
-RegisterNUICallback('NUIJobActions', function(data)
-	SetNuiFocus(true, true)
-	SendNUIMessage({type = 'openJobs'})
-	local job = tostring(exports['esx_policejob']:getJob())
-	if job == 'police' then
-		SendNUIMessage({type = 'showPoliceButton'})
-		SendNUIMessage({type = 'hideAmbulanceButton'})
-		SendNUIMessage({type = 'hideTaxiButton'})
-		SendNUIMessage({type = 'hideMechanicButton'})
-		SendNUIMessage({type = 'hideFireButton'})
-	elseif job == 'ambulance' then
-		SendNUIMessage({type = 'showAmbulanceButton'})
-		SendNUIMessage({type = 'hidePoliceButton'})
-		SendNUIMessage({type = 'hideTaxiButton'})
-		SendNUIMessage({type = 'hideMechanicButton'})
-		SendNUIMessage({type = 'hideFireButton'})
-	elseif job == 'taxi' then
-		SendNUIMessage({type = 'showTaxiButton'})
-		SendNUIMessage({type = 'hidePoliceButton'})
-		SendNUIMessage({type = 'hideAmbulanceButton'})
-		SendNUIMessage({type = 'hideMechanicButton'})
-		SendNUIMessage({type = 'hideFireButton'})
-	elseif job == 'mecano' then
-		SendNUIMessage({type = 'showMechanicButton'})
-		SendNUIMessage({type = 'hidePoliceButton'})
-		SendNUIMessage({type = 'hideAmbulanceButton'})
-		SendNUIMessage({type = 'hideTaxiButton'})
-		SendNUIMessage({type = 'hideFireButton'})
-	elseif job == 'fire' then
-		SendNUIMessage({type = 'showFireButton'})  
-		SendNUIMessage({type = 'hideMechanicButton'})
-		SendNUIMessage({type = 'hidePoliceButton'})
-		SendNUIMessage({type = 'hideAmbulanceButton'})
-		SendNUIMessage({type = 'hideTaxiButton'})
-	else
-		SendNUIMessage({type = 'hidePoliceButton'})
-		SendNUIMessage({type = 'hideAmbulanceButton'})
-		SendNUIMessage({type = 'hideTaxiButton'})
-		SendNUIMessage({type = 'hideMechanicButton'})
-		SendNUIMessage({type = 'hideFireButton'})
-	end
-end)
-
-RegisterNUICallback('NUIopenAmbulance', function()
-	exports['esx_ambulancejob']:openAmbulance()
-end)
-
-RegisterNUICallback('NUIopenPolice', function()
-	exports['esx_policejob']:openPolice()
-end)
-
-RegisterNUICallback('NUIopenMechanic', function()
-	exports['esx_mecanojob']:openMechanic()
-end)
-
-RegisterNUICallback('NUIopenTaxi', function()
-	exports['esx_taxijob']:openTaxi()
-end)
-
-RegisterNUICallback('NUIopenFire', function()
-	exports['esx_firejob']:openFire()
 end)
 
 RegisterNUICallback('NUIShowVehicleControls', function()
@@ -569,133 +485,4 @@ end)
 RegisterNUICallback('NUIShowIndividiualWindowControls', function()
 	SetNuiFocus(true, true)
 	SendNUIMessage({type = 'openIndividualWindowControls'})
-end)
-
-RegisterNUICallback('NUIShowCharacterControls', function()
-	SetNuiFocus(true, true)
-	SendNUIMessage({type = 'openCharacter'})
-end)
-
-RegisterNetEvent("esx_aiomenu:setChar")
-AddEventHandler("esx_aiomenu:setChar", function(identity)
-	myIdentity = identity
-end)
-
-RegisterNetEvent("esx_aiomenu:setIdentifier")
-AddEventHandler("esx_aiomenu:setIdentifier", function(data)
-	myIdentifiers = data
-end)
-
-RegisterNUICallback('NUInewCharacter', function(data)
-	if myIdentity.characterName == "No Character" then
-		exports['esx_identity']:openRegistry()
-	else
-		ESX.ShowNotification('You can only have one character.')
-	end
-end)
-
-RegisterNUICallback('NUIDelChar', function(data)
-	TriggerServerEvent('esx_aiomenu:deleteCharacter', myIdentifiers, data)
-	cb(data)
-end)
-
-RegisterNetEvent('esx_aiomenu:sendProximityMessageID')
-AddEventHandler('esx_aiomenu:sendProximityMessageID', function(id, message)
-	local myId = PlayerId()
-	local pid = GetPlayerFromServerId(id)
-	if pid == myId then
-		TriggerEvent('chatMessage', "[ID]" .. "", {0, 153, 204}, "^7 " .. message)
-	elseif GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(myId)), GetEntityCoords(GetPlayerPed(pid)), true) < 19.999 then
-		TriggerEvent('chatMessage', "[ID]" .. "", {0, 153, 204}, "^7 " .. message)
-	end
-end)
-
-RegisterNetEvent('esx_aiomenu:sendProximityMessagePhone')
-AddEventHandler('esx_aiomenu:sendProximityMessagePhone', function(id, name, message)
-	local myId = PlayerId()
-	local pid = GetPlayerFromServerId(id)
-	if pid == myId then
-		TriggerEvent('chatMessage', "[Phone]^3(" .. name .. ")", {0, 153, 204}, "^7 " .. message)
-	elseif GetDistanceBetweenCoords(GetEntityCoords(GetPlayerPed(myId)), GetEntityCoords(GetPlayerPed(pid)), true) < 19.999 then
-		TriggerEvent('chatMessage', "[Phone]^3(" .. name .. ")", {0, 153, 204}, "^7 " .. message)
-	end
-end)
-
-RegisterNetEvent('esx_aiomenu:successfulDeleteIdentity')
-AddEventHandler('esx_aiomenu:successfulDeleteIdentity', function(data)
-	ESX.ShowNotification('Successfully deleted ' .. data.firstname .. ' ' .. data.lastname .. '.')
-end)
-
-RegisterNetEvent('esx_aiomenu:failedDeleteIdentity')
-AddEventHandler('esx_aiomenu:failedDeleteIdentity', function(data)
-	ESX.ShowNotification('Failed to delete ' .. data.firstname .. ' ' .. data.lastname .. '. Please contact a server admin.')
-end)
-
-RegisterNetEvent('esx_aiomenu:noIdentity')
-AddEventHandler('noIdentity', function()
-	ESX.ShowNotification('You do not have an identity.')
-end)
-
-RegisterNUICallback('NUItoggleID', function(data)
-	TriggerServerEvent('esx_aiomenu:setCharacter', myIdentifiers)
-	Wait(1000)
-	SetNuiFocus(true, true)
-	local charName 		= myIdentity.characterName
-	local charDOB  		= myIdentity.characterDOB
-	local charSex		= myIdentity.characterSex
-	local charHeight 	= myIdentity.characterHeight
-  
-	SendNUIMessage({
-		type = "toggleIDCard",
-		characterName 	= 'Name: ' .. charName,
-		characterDOB	= 'DOB: ' .. charDOB,
-		characterSex	= 'Sex: ' .. charSex,
-		characterHeight = 'Height: ' .. charHeight .. 'cm'	
-	}) 
-end)
-
-RegisterNUICallback('NUIshowID', function(data)
-	showID(data)
-end)
-
-function showID(data)
-	local player, distance = ESX.Game.GetClosestPlayer()
-
-	if distance ~= -1 and distance <= 3.0 then
-		TriggerServerEvent('esx_aiomenu:showID', GetPlayerServerId(PlayerId()), GetPlayerServerId(player))
-	else
-		ESX.ShowNotification('There is no one nearby.')
-	end
-end
-
-RegisterNetEvent('esx_aiomenu:showID')
-AddEventHandler('esx_aiomenu:showID', function(data)
-	local charName 		= data.characterName
-	local charDOB  		= data.characterDOB
-	local charSex 		= data.characterSex
-	local charHeight 	= data.characterHeight
-	SendNUIMessage({type = 'closeAll'})
-	Wait(500)
-	SetNuiFocus(true, true)
-	SendNUIMessage({
-		type   = "toggleIDCard",
-		characterName 	= 'Name: ' .. charName,
-		characterDOB	= 'DOB: ' .. charDOB,
-		characterSex	= 'Sex: ' .. charSex,
-		characterHeight = 'Height: ' .. charHeight .. 'cm'	
-	})
-end)
-
-RegisterNUICallback('NUIdeleteCharacter', function(data)
-	TriggerServerEvent('esx_aiomenu:setCharacter', myIdentifiers)
-	Wait(1000)
-	SetNuiFocus(true, true)
-	local charName = myIdentity.characterName
-  
-	SendNUIMessage({
-		type = "deleteCharacter",
-		characterName = charName,
-		backBtn  = "Back",
-		exitBtn  = "Exit"
-	}) 
 end)
